@@ -59,7 +59,7 @@ const getUserDetail = asyncHandler(
       try {
         const phoneNumber = req.query.phoneNumber || 0
   
-        const foundUser = await User.findOne({ user_phoneNumber: phoneNumber }).lean()
+        const foundUser = await User.findOne({ user_phoneNumber: phoneNumber }).populate("address_id","-_id")
   
         if (!foundUser) {
           return res.status(404).json({ message: "Số điện thoại này không tồn tại" })
