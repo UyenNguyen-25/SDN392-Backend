@@ -9,6 +9,8 @@ router.route("/refresh").get(authController.refresh);
 
 router.route("/forgot-password").post(authController.forgotPassword);
 
+router.route("/signup").post(authController.signup);
+
 router.route("/logout").post(authController.logout);
 
 module.exports = router;

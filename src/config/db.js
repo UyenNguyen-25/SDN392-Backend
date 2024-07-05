@@ -8,7 +8,7 @@ const MONGO_DATABASE = process.env.MONGO_DATABASE || "";
 const MONGO_OPTIONS = {
   retryWrites: true,
   w: "majority",
-  appName: "Conyeu",
+  appName: "Cluster0",
 };
 
 const connect = async () => {

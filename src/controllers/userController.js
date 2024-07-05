@@ -3,6 +3,26 @@ const bcrypt = require("bcrypt");
 const User = require("../models/User");
 const UserRole = require("../models/UserRole");
 const UserAddress = require("../models/UserAddress");
+const { json } = require("express");
+
+const createUserRole = asyncHandler(
+  async (req, res)=> {
+    try {
+      const newRoles = [
+        { role_description: "admin" },
+        { role_description: "manager" },
+        { role_description: "staff" },
+        { role_description: "customer" },
+      ];
+      newRoles.map(async(role) => {
+        return await UserRole.create(role);
+      })
+      return res,json({message:"create user role success"})
+    } catch (error) {
+      console.log(error);
+    }
+  }
+)
 
 const getAllUsers = asyncHandler(
     async (req, res)=> {
@@ -64,15 +84,9 @@ const createNewUser = asyncHandler(
       const hashedPwd = await bcrypt.hash(requestUser.user_password, 10);
   
       //relationship
-      const roles = await UserRole.find({}).lean();
+      const roles = await UserRole.find().lean();
       if (!roles) {
-        const newRoles = [
-          { role_description: "admin" },
-          { role_description: "manager" },
-          { role_description: "staff" },
-          { role_description: "customer" },
-        ];
-        await UserRole.create(newRoles);
+        createNewUser()
       }
   
       const role = await UserRole.findOne({
@@ -286,6 +300,7 @@ const checkPhoneExisted = asyncHandler(
 );
 
 module.exports = {
+    createUserRole,
     getAllUsers,
     createNewUser,
     updateUser,

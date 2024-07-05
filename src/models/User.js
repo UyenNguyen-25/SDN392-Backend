@@ -21,7 +21,7 @@ const UserSchema = new mongoose.Schema(
     user_role: {
       type: mongoose.Types.ObjectId,
       ref: "UserRole",
-      default: "6662c31046056e2ddfd378e8",
+      default: "6687c30d65384dddd7791ae4",
     },
     address_id: {
       type: mongoose.Types.ObjectId,

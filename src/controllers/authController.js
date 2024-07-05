@@ -3,6 +3,7 @@ const asyncHandler = require("express-async-handler");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
+const UserAddress = require("../models/UserAddress")
 
 const ACCESS_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET || "";
 const REFRESH_TOKEN_SECRET = process.env.REFRESH_TOKEN_SECRET || "";
@@ -53,6 +54,49 @@ const login = asyncHandler(async (req, res) => {
 
   // Send accessToken containing username and roles
   res.json({ accessToken });
+});
+
+const signup = asyncHandler(async (req, res)  => {
+  const requestUser = req.body;
+
+  //confirm data
+  if (!requestUser.user_phoneNumber || !requestUser.user_password) {
+    return res.status(400).json({ message: "All fields are required" });
+  }
+
+  //check duplicate
+  const duplicate = await User.findOne({
+    user_phoneNumber: requestUser.user_phoneNumber,
+  })
+    .lean()
+    .exec();
+
+  if (duplicate) {
+    return res.status(409).json({ message: "Phone number existed" });
+  }
+
+  //hash password
+  const hashedPwd = await bcrypt.hash(requestUser.user_password, 10);
+
+  //create new user address
+  const userAddress = await UserAddress.create({
+    fullname: requestUser.user_fullname || "",
+    phoneNumber: requestUser.user_phoneNumber,
+  });
+
+  //create and store new user
+  const user = await User.create({
+    user_phoneNumber: requestUser.user_phoneNumber,
+    user_password: hashedPwd,
+    address_id: userAddress._id,
+  });
+  if (user) {
+    res
+      .status(200)
+      .json({ message: `${requestUser.user_phoneNumber} create success` });
+  } else {
+    res.status(400).json({ message: "Invalid user data received" });
+  }
 });
 
 const refresh = asyncHandler(async (req, res) => {
@@ -126,4 +170,4 @@ const logout = asyncHandler(async (req, res) => {
   res.json({ message: "Cookie cleared" });
 });
 
-module.exports = { login, refresh, forgotPassword, logout };
+module.exports = { login, refresh, forgotPassword, logout, signup };

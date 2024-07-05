@@ -7,6 +7,8 @@ const router = express.Router();
 router.post("/", userController.createNewUser);
 router.post("/check-phone-existed", userController.checkPhoneExisted);
 
+// router.post("/create-user-role",userController.createUserRole)
+
 router.use(verifyJWT)
 
 router
