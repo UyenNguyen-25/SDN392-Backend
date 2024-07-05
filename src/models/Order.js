@@ -21,7 +21,7 @@ const OrderSchema = new mongoose.Schema(
     order_status_id: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "OrderStatus",
-      default: "666c24fef787959e8ad3c51a",
+      default: "6687c87de5266e3b5859f43e",
       required: true,
     },
   },

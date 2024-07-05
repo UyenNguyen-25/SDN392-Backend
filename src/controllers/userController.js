@@ -3,7 +3,6 @@ const bcrypt = require("bcrypt");
 const User = require("../models/User");
 const UserRole = require("../models/UserRole");
 const UserAddress = require("../models/UserAddress");
-const { json } = require("express");
 
 const createUserRole = asyncHandler(
   async (req, res)=> {
@@ -17,7 +16,7 @@ const createUserRole = asyncHandler(
       newRoles.map(async(role) => {
         return await UserRole.create(role);
       })
-      return res,json({message:"create user role success"})
+      return res.json({message:"create user role success"})
     } catch (error) {
       console.log(error);
     }
