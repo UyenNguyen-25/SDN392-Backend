@@ -165,7 +165,7 @@ const updateUser = asyncHandler(
   
       //relationship role
       const role = await UserRole.findOne({
-        role_description: requestUser.user_role.toLocaleLowerCase(),
+        role_description: requestUser.user_role.toLowerCase(),
       });
   
       //relationship address
@@ -237,7 +237,7 @@ const confirmUserAddress = asyncHandler(
   
       //relationship role
       const role = await UserRole.findOne({
-        role_description: requestUser.user_role.toLocaleLowerCase(),
+        role_description: requestUser.user_role.toLowerCase(),
       });
   
       //relationship address
