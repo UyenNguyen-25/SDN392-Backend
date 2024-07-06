@@ -187,7 +187,7 @@ const updateUser = asyncHandler(
           } else {
             address.address_line2 = requestUser.address;
           }
-        } else address!.address_line1 = requestUser.address;
+        } else address.address_line1 = requestUser.address;
       }
 
       //fullname
