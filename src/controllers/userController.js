@@ -131,157 +131,143 @@ const createNewUser = asyncHandler(
 );
   
 const updateUser = asyncHandler(
-    async (req, res) => {
-      const requestUser = req.body;
-  
-      //confirm data
-      if (!requestUser.user_id) {
-        return res.status(400).json({ message: "id is required" });
-      }
-  
-      const user = await User.findById(requestUser.user_id).exec();
-  
-      if (!user) {
-        return res.status(400).json({ message: "User not found" });
-      }
-  
-      //check duplicate
-      const duplicate = await User.findOne({
-        user_phoneNumber: requestUser.user_phoneNumber,
-      })
-        .lean()
-        .exec();
-  
-      if (
-        duplicate &&
-        duplicate?._id.toString() !== requestUser.user_id.toString()
-      ) {
-        return res.status(409).json({ message: "Phone number existed" });
-      }
-      //hash password
-      if (requestUser.user_password && requestUser.user_password.length > 0) {
-        user.user_password = await bcrypt.hash(requestUser.user_password, 10);
-      } else user.user_password = user.user_password;
-  
-      //relationship role
-      const role = await UserRole.findOne({
-        role_description: requestUser.user_role.toLowerCase(),
-      });
-  
-      //relationship address
-      const address = await UserAddress.findById(user.address_id);
-      if (!address) {
-        const createNewAddress = await UserAddress.create({
-          fullname: user.user_fullname,
-          phoneNumber: user.user_phoneNumber,
-          address_line1: requestUser.address,
-        });
-        await user.updateOne({}, {}).set("address_id", createNewAddress._id);
-      } else {
-        if (requestUser?.address && requestUser.address.length > 0) {
-          if (address?.address_line1 && address?.address_line1.length > 0) {
-            if (requestUser.default) {
-              console.log("address1");
-  
-              address.address_line1 = requestUser.address;
-            } else {
-              address.address_line2 = requestUser.address;
-            }
-          } else address.address_line1 = requestUser.address;
-        }
-  
-        //fullname
-        address.phoneNumber = requestUser.user_phoneNumber;
-        await address?.save();
-      }
-  
-      (user.user_phoneNumber =
-        requestUser.user_phoneNumber || user.user_phoneNumber),
-        (user.user_fullname = requestUser.user_fullname || user.user_fullname),
-        (user.user_email = requestUser.user_email || user.user_email),
-        (user.user_status = requestUser.user_status),
-        await user.updateOne({}, {}).set("user_role", role?._id);
-      await user.save();
-  
-      const updatedUser = await User.findById(requestUser.user_id)
-        .populate("user_role", "role_description -_id")
-        .populate("address_id", "-_id")
-        .lean();
-  
-      res.status(200).json({
-        message: `${user.user_phoneNumber} updated success`,
-        updatedUser,
-      });
+  async (req, res) => {
+    const requestUser = req.body;
+
+    //confirm data
+    if (!requestUser.user_id) {
+      return res.status(400).json({ message: "id is required" });
     }
+
+    const user = await User.findById(requestUser.user_id).exec();
+
+    if (!user) {
+      return res.status(400).json({ message: "User not found" });
+    }
+
+    //check duplicate
+    const duplicate = await User.findOne({
+      user_phoneNumber: requestUser.user_phoneNumber,
+    })
+      .lean()
+      .exec();
+
+    if (
+      duplicate &&
+      duplicate?._id.toString() !== requestUser.user_id.toString()
+    ) {
+      return res.status(409).json({ message: "Phone number existed" });
+    }
+    //hash password
+    if (requestUser.user_password && requestUser.user_password.length > 0) {
+      user.user_password = await bcrypt.hash(requestUser.user_password, 10);
+    } else user.user_password = user.user_password;
+
+    //relationship role
+    const role = await UserRole.findOne({
+      role_description: requestUser.user_role.toLowerCase(),
+    });
+
+    //relationship address
+    const address = await UserAddress.findById(user.address_id);
+    if (!address) {
+      const createNewAddress = await UserAddress.create({
+        fullname: user.user_fullname,
+        phoneNumber: user.user_phoneNumber,
+        address_line1: requestUser.address,
+      });
+      await user.updateOne({}, {}).set("address_id", createNewAddress._id);
+    } else {
+      if (requestUser?.address && requestUser.address.length > 0) {
+        if (address?.address_line1 && address?.address_line1.length > 0) {
+          if (requestUser.default) {
+            console.log("address1");
+
+            address.address_line1 = requestUser.address;
+          } else {
+            address.address_line2 = requestUser.address;
+          }
+        } else address!.address_line1 = requestUser.address;
+      }
+
+      //fullname
+      address.phoneNumber = requestUser.user_phoneNumber;
+      await address?.save();
+    }
+
+    (user.user_phoneNumber =
+      requestUser.user_phoneNumber || user.user_phoneNumber),
+      (user.user_fullname = requestUser.user_fullname || user.user_fullname),
+      (user.user_email = requestUser.user_email || user.user_email),
+      (user.user_status = requestUser.user_status),
+      await user.updateOne({}, {}).set("user_role", role?._id);
+    await user.save();
+
+    const updatedUser = await User.findById(requestUser.user_id)
+      .populate("user_role", "role_description -_id")
+      .populate("address_id", "-_id")
+      .lean();
+
+    res.status(200).json({
+      message: `${user.user_phoneNumber} updated success`,
+      updatedUser,
+    });
+  }
 );
   
 const confirmUserAddress = asyncHandler(
-    async (req, res) => {
-      const requestUser = req.body;
-  
-      //confirm data
-      if (!requestUser.user_phoneNumber) {
-        return res.status(400).json({ message: "user_phoneNumber is required" });
-      }
-  
-      const user = await User.findOne({user_phoneNumber:requestUser.user_phoneNumber}).exec();
-  
-      if (!user) {
-        return res.status(400).json({ message: "User not found" });
-      }
-  
-      //hash password
-      if (requestUser.user_password && requestUser.user_password.length > 0) {
-        user.user_password = await bcrypt.hash(requestUser.user_password, 10);
-      } else user.user_password = user.user_password;
-  
-      //relationship role
-      const role = await UserRole.findOne({
-        role_description: requestUser.user_role.toLowerCase(),
-      });
-  
-      //relationship address
-      const address = await UserAddress.findById(user.address_id);
-      if (!address) {
-        const createNewAddress = await UserAddress.create({
-          fullname: user.user_fullname,
-          address_line1: requestUser.address,
-        });
-        await user.updateOne({}, {}).set("address_id", createNewAddress._id);
-      } else {
-        if (requestUser?.address && requestUser.address.length > 0) {
-          if (address?.address_line1 && address?.address_line1.length > 0) {
-            if (requestUser.default) {
-              console.log("address1");
-  
-              address.address_line1 = requestUser.address;
-            } else {
-              address.address_line2 = requestUser.address;
-            }
-          } else address.address_line1 = requestUser.address;
-        }
-  
-        //fullname
-        address.phoneNumber = requestUser.user_phoneNumber;
-        await address?.save();
-      }
-        (user.user_fullname = requestUser.user_fullname || user.user_fullname),
-        (user.user_email = requestUser.user_email || user.user_email),
-        (user.user_status = requestUser.user_status),
-        await user.updateOne({}, {}).set("user_role", role?._id);
-      await user.save();
-  
-      const updatedUser = await User.findById(requestUser.user_id)
-        .populate("user_role", "role_description -_id")
-        .populate("address_id", "-_id")
-        .lean();
-  
-      res.status(200).json({
-        message: `${user.user_phoneNumber} updated success`,
-        updatedUser,
-      });
+  async (req, res) => {
+    const requestUser = req.body;
+
+    //confirm data
+    if (!requestUser.user_id) {
+      return res.status(400).json({ message: "id is required" });
     }
+
+    const user = await User.findById(requestUser.user_id).exec();
+
+    if (!user) {
+      return res.status(400).json({ message: "User not found" });
+    }
+
+    const address = await UserAddress.findById(user.address_id).exec();
+
+    if (!address) {
+      const createNewAddress = await UserAddress.create({});
+      await user.updateOne({}, {}).set("address_id", createNewAddress._id);
+      await user.save();
+    }
+
+    if (requestUser?.address && requestUser.address.length > 0) {
+      if (address?.address_line1 && address?.address_line1.length > 0) {
+        if (requestUser.default) {
+          console.log("address1");
+
+          address.address_line1 = requestUser.address;
+        } else {
+          address.address_line2 = requestUser.address;
+        }
+      } else address.address_line1 = requestUser.address;
+
+      //fullname
+      address.fullname = requestUser.fullname || user.user_fullname;
+      address.phoneNumber =
+        requestUser.phoneNumber || user.user_phoneNumber || "";
+      await address?.save();
+    }
+
+    const updatedUser = await User.findById(requestUser.user_id)
+      .populate("user_role", "role_description -_id")
+      .populate("address_id", "-_id")
+      .lean();
+
+    res.status(200).json({
+      message: `${user.user_phoneNumber} updated success`,
+      updatedUser,
+    });
+  }
 );
+
   
 const deleteUser = asyncHandler(
     async (req, res) => {
