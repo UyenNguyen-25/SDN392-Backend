@@ -33,6 +33,7 @@ const login = asyncHandler(async (req, res) => {
         user_phoneNumber: foundUser.user_phoneNumber,
         user_fullname: foundUser.user_fullname,
         user_role: foundUser?.user_role,
+        user_id: foundUser?._id
       },
     },
     ACCESS_TOKEN_SECRET,
@@ -125,6 +126,7 @@ const refresh = asyncHandler(async (req, res) => {
           user_phoneNumber: foundUser.user_phoneNumber,
           user_fullname: foundUser.user_fullname,
           user_role: foundUser?.user_role,
+          user_id: foundUser?._id
         },
       },
       ACCESS_TOKEN_SECRET,
