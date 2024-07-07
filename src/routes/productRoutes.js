@@ -4,7 +4,7 @@ const verifyJWT = require ("../middleware/verifyJWT");
 
 const router = express.Router();
 
-// router.route("/get-all-product").get(productController.get_all_product);
+router.route("/get-all-product").get(productController.get_all_product);
 // router
 //   .route("/get-product-by-id/:product_id")
 //   .get(productController.get_product_by_id);
