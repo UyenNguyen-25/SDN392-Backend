@@ -1,5 +1,20 @@
 const mongoose = require("mongoose");
 
+const AddressSchema = new mongoose.Schema({
+  fullname: {
+    type: String,
+    required: true
+  },
+  phoneNumber: {
+    type: String,
+    required: true
+  },
+  fullAddress: {
+    type: String,
+    required: true
+  }
+}, { timestamps: true });
+
 const OrderSchema = new mongoose.Schema(
   {
     user_id: {
@@ -7,13 +22,12 @@ const OrderSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
-    order_items: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "OrderItem",
-        required: true,
-      },
-    ],
+    order_items: [{
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "OrderItem",
+      required: true,
+    }]
+    ,
     total_money: {
       type: Number,
       required: true,
@@ -21,9 +35,13 @@ const OrderSchema = new mongoose.Schema(
     order_status_id: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "OrderStatus",
-      default: "6687c87de5266e3b5859f43e",
+      default: "666c24fef787959e8ad3c51a",
       required: true,
     },
+    address: {
+      type: AddressSchema,
+      required: true
+    }
   },
   { timestamps: true }
 );
