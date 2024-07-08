@@ -47,7 +47,7 @@ const ProductSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Feedback",
       default: null
-    }],
+    }]
   },
   { timestamps: true }
 );
