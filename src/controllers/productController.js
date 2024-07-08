@@ -26,6 +26,9 @@ const createNewProduct = asyncHandler(
   async (req, res) => {
     try {
       const dataCreate = req.body;
+      if(!dataCreate.product_name || !dataCreate.product_type || !dataCreate.product_brand_id || !dataCreate.product_age || !dataCreate.product_price || !dataCreate.product_price_discount || !dataCreate.product_img || !dataCreate.quantity || !dataCreate.product_description || !dataCreate.product_status) {
+        return res.status(400).json({ message: "Please fill all fields." });
+      }
       const duplicate_product_name = await Product.findOne({ product_name: dataCreate.product_name });
       if (duplicate_product_name) {
         return res.status(400).json({ message: "Product name already exists." });
@@ -80,6 +83,9 @@ const update_product = asyncHandler(
     try {
       const { product_id } = req.params;
       const dataUpdate = req.body;
+      if(!dataUpdate.product_name || !dataUpdate.product_type || !dataUpdate.product_brand_id || !dataUpdate.product_age || !dataUpdate.product_price || !dataUpdate.product_price_discount || !dataUpdate.product_img || !dataUpdate.quantity || !dataUpdate.product_description || !dataUpdate.product_status) {
+        return res.status(400).json({ message: "Please fill all fields." });
+      }
       const product = await Product.findById(product_id);
       if (!product) {
         return res.status(400).json({ message: "No product found." });
