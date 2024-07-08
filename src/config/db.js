@@ -13,7 +13,7 @@ const MONGO_OPTIONS = {
 
 const connect = async () => {
   try {
-    const uri = `mongodb+srv://${MONGO_USERNAME}:${MONGO_PASSWORD}@${MONGO_URL}/${MONGO_DATABASE}?`;
+    const uri = `mongodb+srv://${MONGO_USERNAME}:${MONGO_PASSWORD}@${MONGO_URL}/${MONGO_DATABASE}?retryWrites=true&w=majority`;
     await mongoose.connect(uri, MONGO_OPTIONS);
     console.log("Connect success");
   } catch (error) {

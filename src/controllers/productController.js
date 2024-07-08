@@ -76,7 +76,7 @@ const duplicate_product_name = asyncHandler(
       res.status(500).json({ message: "Internal server error." });
     }
   }
-)
+);
 
 const update_product = asyncHandler(
   async (req, res) => {
@@ -136,6 +136,7 @@ const delete_product = asyncHandler(
     } catch {
       res.status(400).json({ message: "Internal server error." });
     }
+    }
   );
     
   const get_all_product = async (req, res) => {
@@ -155,4 +156,32 @@ const delete_product = asyncHandler(
     }
   }
 
-module.exports = { autoCreateStatus, createNewProduct, duplicate_product_name, update_product, delete_product, get_all_product }
+  const get_product_by_id = asyncHandler(async (req, res) => {
+    const { product_id } = req.params;
+  
+    try {
+      const product = await Product.findById(product_id)
+        .populate("product_status")
+        .populate("product_brand_id");
+  
+      if (!product) {
+        return res.status(404).json({ message: "Không tìm thấy sản phẩm" });
+      }
+      res.json(product);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+  
+  const getProductStatus = asyncHandler(async (req, res) => {
+    try {
+      const productStatuses = await ProductStatus.find();
+  
+      res.json(productStatuses);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json("Internal server error.");
+    }
+  });
+
+module.exports = { autoCreateStatus, createNewProduct, duplicate_product_name, update_product, delete_product, get_all_product, get_product_by_id, getProductStatus }

@@ -6,7 +6,7 @@ const ProductSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "ProductBrand",
       required: true,
-    },    
+    },
     product_name: {
       type: String,
       maxlength: 200,
