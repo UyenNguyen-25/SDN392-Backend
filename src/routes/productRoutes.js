@@ -1,15 +1,15 @@
-const express = require ("express");
+const express = require("express");
 const productController = require("../controllers/productController");
-const verifyJWT = require ("../middleware/verifyJWT");
-
+const verifyJWT = require("../middleware/verifyJWT");
 const router = express.Router();
 
 // router.route("/get-all-product").get(productController.get_all_product);
 // router
 //   .route("/get-product-by-id/:product_id")
+router.get("/products/:product_id", productController.getProductById);
 //   .get(productController.get_product_by_id);
 
-// router.route("/get-product-status").get(productController.getProductStatus);
+router.route("/get-product-status").get(productController.getProductStatus);
 
 router.use(verifyJWT);
 
