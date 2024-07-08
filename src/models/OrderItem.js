@@ -11,6 +11,10 @@ const OrderItemsSchema = new mongoose.Schema(
       ref: "Product",
       required: true,
     },
+    price: {
+      type: Number,
+      required: true,
+    }
   },
   { timestamps: true }
 );

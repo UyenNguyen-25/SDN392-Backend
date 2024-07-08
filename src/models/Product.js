@@ -43,13 +43,11 @@ const ProductSchema = new mongoose.Schema(
       ref: "ProductStatus",
       required: true,
     },
-    feedback_id: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Feedback",
-        default: null,
-      },
-    ],
+    feedback_id: [{
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Feedback",
+      default: null
+    }]
   },
   { timestamps: true }
 );
