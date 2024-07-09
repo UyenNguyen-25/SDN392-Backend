@@ -5,8 +5,8 @@ const OrderStatus = require('../models/OrderStatus');
 // Create a new feedback
 const createFeedback = async (req, res) => {
   try {
-    const { order_items_id, feedback_rating, feedback_description } = req.body;
-    const user_id = req.user_id; // Assuming user ID is available in req.user
+    const { order_items_id, feedback_rating, feedback_description, user_id } = req.body;
+    // const user_id = req.user_id; // Assuming user ID is available in req.user
 
     // Check if the order item exists and belongs to the user
     const order = await Order.findOne({ user_id, order_items: order_items_id }).populate('order_status_id');
@@ -27,6 +27,7 @@ const createFeedback = async (req, res) => {
 
     const newFeedback = new Feedback({
       order_items_id,
+      user_id,
       feedback_rating,
       feedback_description
     });
