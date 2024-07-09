@@ -7,6 +7,11 @@ const FeedbackSchema = new mongoose.Schema(
       ref: "OrderItem",
       required: true,
     },
+    user_id:{
+      type: mongoose.Schema.Types.ObjectId,
+      ref:"User",
+      required:true
+    },
     feedback_rating: {
       type: Number,
       required: true,
